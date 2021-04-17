@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    <!-- <meta http-equiv="refresh" content="5"> -->
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'stockinfo/images/logo.png'%}">
     <title>Kstocks</title>
@@ -16,9 +17,12 @@
     <link href="{% static 'stockinfo/assets/libs/chartist/dist/chartist.min.css'%}" rel="stylesheet">
     <link href="{% static 'stockinfo/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.css' %}" rel="stylesheet" />
     <link href="{% static 'stockinfo/dist/css/style.min.css'%}" rel="stylesheet">
+    <link href="{% static 'stockinfo/king.css'%}" rel="stylesheet">
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 </head>
 
 <body>
+    {% url 'stockinfo-home' as home%}
     <div class="preloader">
         <div class="lds-ripple">
             <div class="lds-pos"></div>
@@ -58,7 +62,88 @@
                             class="ti-more"></i></a>
                 </div>
                 <div class="navbar-collapse collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav float-right mr-5">
+                    {% if user.is_authenticated %}
+                    {% ifequal request.path home %}
+                    <ul class="navbar-nav float-left mr-auto ml-3 pl-1">
+                        <li class="nev-item">
+                            <div class="p-2 border border-primary rounded pb-3 pr-4">
+                                <b class="text-dark">{{ nifty_50.name}}</b>
+                                {% if nifty_50.pChange > 0%}
+                                    <div class="arrowup">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                {% else %}
+                                    <div class="arrowdo">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                {% endif %}
+                                <br>
+                                <b class="text-dark">{{nifty_50.lastPrice}}</b>
+                                {% if nifty_50.pChange > 0%}
+                                    <small class="p-1 text-success">{{nifty_50.pChange}}%</small>
+                                {% else %}
+                                    <small class="p-1 text-danger">{{nifty_50.pChange}}%</small>
+                                {% endif %}
+                            </div>
+                        </li>
+                        <li class="nev-item">
+                            <div class="p-2 border border-primary rounded pb-3 pr-4 ml-5">
+                                <b class="text-dark">{{ nifty_bank.name}}</b>
+                                {% if nifty_bank.pChange > 0%}
+                                    <div class="arrowup" style=" left: 47%">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                {% else %}
+                                    <div class="arrowdo" style=" left: 47%">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                {% endif %}
+                                <br>
+                                <b class="text-dark">{{nifty_bank.lastPrice}}</b>
+                                {% if nifty_bank.pChange > 0%}
+                                    <small class="p-1 text-success">{{nifty_bank.pChange}}%</small>
+                                {% else %}
+                                    <small class="p-1 text-danger">{{nifty_bank.pChange}}%</small>
+                                {% endif %}
+                            </div>
+                        </li>
+                        <li class="nev-item">
+                            <div class="p-2 border border-primary rounded pb-3 pr-4 ml-5">
+                                <b class="text-dark">{{ india_vix.name}}</b>
+                                {% if india_vix.pChange > 0%}
+                                    <div class="arrowup" style=" left: 62%">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                {% else %}
+                                    <div class="arrowdo" style=" left: 62%">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                {% endif %}
+                                <br>
+                                <b class="text-dark">{{india_vix.lastPrice}}</b>
+                                {% if india_vix.pChange > 0%}
+                                    <small class="p-1 text-success">{{india_vix.pChange}}%</small>
+                                {% else %}
+                                    <small class="p-1 text-danger">{{india_vix.pChange}}%</small>
+                                {% endif %}
+                            </div>
+                        </li>
+                    </ul>
+                    {% endifequal %}
+                    {% endif %}
+                    <ul class="navbar-nav float-right">
                         {% if user.is_authenticated %}
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown"
@@ -77,7 +162,7 @@
                                             class="svg-icon mr-2 ml-1"></i>
                                         Inbox</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="javascript:void(0)"><i data-feather="settings"
+                                    <a class="dropdown-item" href="{% url 'settings' %}"><i data-feather="settings"
                                             class="svg-icon mr-2 ml-1"></i>
                                         Account Setting</a>
                                     <div class="dropdown-divider"></div>
@@ -119,8 +204,45 @@
                 </nav>
             </div>
         </aside>
-        <div class="page-wrapper pl-md-4 mt-3">
+        <div class="page-wrapper mt-3 pl-3">
+            {% ifequal request.path home %}
+            {% if user.is_authenticated %}
+                <div class="tradingview-widget-container ">
+                  <div id="tradingview_2ff4f"></div>
+                  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/NASDAQ-AAPL/" rel="noopener" target="_blank"><span class="blue-text">AAPL Chart</span></a> by Kstocks</div>
+                  <script type="text/javascript">
+                  new TradingView.widget(
+                  {
+                    "width":1080,
+                    "height":600,
+                    "symbol": "NASDAQ:AAPL",
+                    "interval": "15",
+                    "timezone": "Etc/UTC",
+                    "theme": "light",
+                    "style": "1",
+                    "locale": "en",
+                    "toolbar_bg": "#f1f3f6",
+                    "enable_publishing": false,
+                    "withdateranges": true,
+                    "hide_side_toolbar": false,
+                    "allow_symbol_change": true,
+                    "details": true,
+                    "container_id": "tradingview_9e078"
+                }
+                  );
+                  </script>
+                </div>
+            {% else %}
+                <div class="ml-3">
+                <h2>You need to <b>login</b> first to freely use all of the free functionality provided by <u>Kstocks</u>.</h2>
+                <br>
+                <br>
+                <small>Thank You, Have a nice day.</small>
+                </div>
+            {% endif %}
+            {% endifequal %}
             {% block content %}{% endblock %}
+            
         </div>
     </div>
     <script src="{% static 'stockinfo/assets/libs/jquery/dist/jquery.min.js'%}"></script>
