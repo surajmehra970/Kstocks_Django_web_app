@@ -34,6 +34,6 @@ def settings(request):
 	context = {
 		'u_form':u_form,
 		'p_form':p_form
-	}
+		}
 
 	return render(request,'user/settings.html', context)

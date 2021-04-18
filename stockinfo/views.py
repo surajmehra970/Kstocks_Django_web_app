@@ -15,5 +15,5 @@ def home(request):
 	}
 	return render(request, 'stockinfo/base.html',contaxt)
 
-def profile(request):
+def profi(request):
 	return render(request, 'stockinfo/profile.html')

@@ -3,6 +3,6 @@ from . import views
 
 urlpatterns = [
     path('',views.home,name='stockinfo-home'),
-    path('profile/',views.profile,name='profile')
+    path('profile/',views.profi,name='profile')
 
 ]
